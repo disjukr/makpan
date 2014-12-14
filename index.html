@@ -1,0 +1,354 @@
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+    <meta name="viewport" content="user-scalable=no">
+    <meta charset="utf-8">
+    <script src="./lib/jquery-2.1.1.min.js"></script><!-- jQuery 2.1.1 -->
+    <script src="./lib/peer.min.js"></script><!-- PeerJS 0.3.9 -->
+    <script src="./lib/es5-shim.min.js"></script><!-- es5-shim 4.0.5 -->
+    <script src="./lib/es6-shim.min.js"></script><!-- es6-shim 0.21.1 -->
+    <script src="./lib/croquis.js"></script><!-- croquis.js 0.3.0 -->
+    <script src="./lib/caragen.js"></script>
+    <title>Makpan</title>
+    <style type="text/css">
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+    pre {
+        white-space: pre-wrap;
+    }
+    .sequence > * {
+        display: none;
+    }
+    .sequence > .current {
+        display: block;
+    }
+    .scene {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    #main-scene {
+        text-align: center;
+        overflow-y: scroll;
+    }
+    #main-scene .title {
+        width: 100%;
+    }
+    #main-scene .donate {
+        width: 100%;
+    }
+    #main-scene .donate-form > * {
+        margin: 0 auto;
+    }
+    #host-waiting-scene {
+        text-align: center;
+    }
+    #host-waiting-scene .room-address span {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    #guest-waiting-scene {
+        text-align: center;
+    }
+    #host-drawing-scene {
+        background-color: gray;
+    }
+    #guest-drawing-scene {
+        background-color: gray;
+    }
+    #host-drawing-scene .board-area.brush,
+    #guest-drawing-scene .board-area.brush {
+        cursor: url(./img/brush.png) 3 3, pointer;
+    }
+    #host-drawing-scene .board-area.eraser,
+    #guest-drawing-scene .board-area.eraser {
+        cursor: url(./img/eraser.png) 3 3, pointer;
+    }
+    </style>
+</head>
+<body class="sequence">
+    <!-- scene -->
+    <div id="main-scene" class="current scene">
+        <h1 class="title">막판 - P2P 넷캔</h1>
+        <hr>
+        <div class="sequence">
+            <div class="current support-checker sequence">
+                <div class="current checking">
+                    <p>P2P 연결 테스트 중입니다…</p>
+                    <p class="refresh">너무 오래 걸리면 새로고침 해주세요</p>
+                </div>
+                <div class="browser-incompatible">
+                    <p>지금 사용중인 인터넷 브라우저가 WebRTC P2P 기술을 지원하지 않는 것 같습니다.</p>
+                    <p>최신 버전의 크롬이나 파이어폭스 브라우저를 사용해보세요!</p>
+                    <p><a href="https://www.google.co.kr/intl/ko/chrome/browser/desktop/index.html" target="_blank">크롬 설치</a></p>
+                    <p><a href="http://www.mozilla.or.kr/ko/firefox/new/" target="_blank">파이어폭스 설치</a></p>
+                </div>
+                <div class="default">
+                    <p>왠지 잘 모르겠지만 접속에 실패했습니다 :Q... <del>무능한 개발자 같으니라고…</del></p>
+                    <p><a href="https://twitter.com/disjukr" target="_blank">개발자</a>한테 이 상황을 알려주세요!</p>
+                    <p>아래의 정보를 같이 주시면 문제를 파악하는데 많은 도움이 됩니다.</p>
+                    <h3>문제가 발생한 상황</h3>
+                    <pre class="context"></pre>
+                </div>
+            </div>
+            <div class="form">
+                <h2>판 열기</h2>
+                <div class="open-form">
+                    <button class="open">열기</button>
+                </div>
+                <h2>판 참여하기</h2>
+                <div class="join-form">
+                    <label>판 주소 <input class="host-id" type="text"></label>
+                    <button class="join">참여하기</button>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <h2 class="donate">이거 만든사람 밥사주기</h2>
+        <div class="donate-form">
+            <div class="sequence">
+                <p>감사합니다</p>
+                <p>사랑합니다</p>
+                <p>우와</p>
+                <p>고마워요</p>
+                <p>치킨 한 마리?</p>
+                <p>가끔은 비싼 밥을 먹고싶을 때가 있죠</p>
+                <p>케세라세라</p>
+                <p>광고를 달 걸 그랬나</p>
+                <p>떼돈 벌고 싶다…</p>
+                <p>밥대신 집 사줘도 돼요 헤헤</p>
+            </div>
+            <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
+            <input type="hidden" name="cmd" value="_s-xclick">
+            <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----">
+            <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+            <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+            </form>
+        </div>
+    </div>
+    <div id="host-waiting-scene" class="scene">
+        <h1>대기실</h1>
+        <hr>
+        <h2>판 주소</h2>
+        <div class="sequence">
+            <p class="current">판 주소를 생성하는 중입니다…</p>
+            <p class="room-address">판 주소: <span/></p>
+            </div>
+        <p>같이 그릴 사람들에게 판 주소를 알려주세요!</p>
+        <h2>설정</h2>
+        <h3>내 별명</h3>
+        <input class="nick" type="text">
+        <h3>판 크기</h3>
+        <div class="pan-size">
+            <label>가로 <input class="width" type="number" value="640">px</label>
+            <label>세로 <input class="height" type="number" value="480">px</label>
+        </div>
+        <h3>판 주인</h3>
+        <p class="host-nick"></p>
+        <h3>참여자</h3>
+        <ul class="guest-list"></ul>
+        <button class="start">시작하기</button>
+    </div>
+    <div id="guest-waiting-scene" class="scene">
+        <h1>대기실</h1>
+        <hr>
+        <h3>판 크기</h3>
+        <div class="pan-size">
+            <label>가로 <span class="width"/>px</label>
+            <label>세로 <span class="height"/>px</label>
+        </div>
+        <h3>내 별명</h3>
+        <input class="nick" type="text">
+        <h3>판 주인</h3>
+        <p class="host-nick"></p>
+        <h3>참여자</h3>
+        <ul class="guest-list"></ul>
+    </div>
+    <div id="host-drawing-scene" class="scene">
+        <div class="board-area"></div>
+        <div class="brush-or-eraser sequence">
+            <button class="current to-eraser">지우개</button>
+            <button class="to-brush">브러시</button>
+        </div>
+        <input type="color">
+        <p>
+            <button class="layer-status">레이어 상태 보기</button>
+            놓으면 돌아옵니다.
+        </p>
+    </div>
+    <div id="guest-drawing-scene" class="scene">
+        <div class="board-area"></div>
+        <div class="brush-or-eraser sequence">
+            <button class="current to-eraser">지우개</button>
+            <button class="to-brush">브러시</button>
+        </div>
+        <input type="color">
+        <p>
+            <button class="layer-status">레이어 상태 보기</button>
+            놓으면 돌아옵니다.
+        </p>
+    </div>
+    <!-- util -->
+    <script>
+    $.fn.setCurrent = function setCurrent() {
+        this.siblings().removeClass('current');
+        if (!this.hasClass('current'))
+            this.addClass('current');
+    };
+    $.fn.randomChild = function randomChild() {
+        var $children = this.children();
+        return $children.eq(Math.floor(Math.random() * $children.length));
+    };
+    function newPeer() {
+        // peerjs api key for beta
+        // return new Peer({key: '1w9wjvxcsg11nhfr'});
+        // localhost peerjs-server for dev
+        // return new Peer({host: 'localhost', port: 1234});
+        // devunt server
+        return new Peer({host: 'kanade.devunt.kr', port: 1234});
+    }
+    </script>
+    <script src="./js/Board.js"></script>
+    <script src="./js/host-waiting.js"></script>
+    <script src="./js/guest-waiting.js"></script>
+    <script src="./js/host-drawing.js"></script>
+    <script src="./js/guest-drawing.js"></script>
+    <!-- entry point -->
+    <script>
+    $(function () {
+        $('#main-scene .donate-form .sequence').randomChild().setCurrent();
+        setTimeout(function () {
+            $('#main-scene .support-checker .checking .refresh').text('어… 왜 이렇게 오래걸리지?? 새로고침 해보세요ㅠㅠ');
+        }, 10000); // peerjs 연결 테스트 하는데 10초보다 오래걸리면 이상한 상황이겠지?
+        checkPeerJS().then(function () {
+            $('#main-scene .form').setCurrent();
+            var $joinButton = $('#main-scene .join-form button.join');
+            var $openButton = $('#main-scene .open-form button.open');
+            $joinButton.on('click', function () {
+                var hostId = $('#main-scene .join-form input.host-id').val().trim();
+                if (hostId.length < 1) {
+                    alert('주소를 입력해주세요');
+                    return;
+                }
+                var peer = newPeer();
+                var conn = peer.connect(hostId, {reliable: true});
+                $joinButton.prop('disabled', true);
+                conn.on('open', function () {
+                    conn.removeAllListeners('open');
+                    peer.removeAllListeners();
+                    peer.disconnect();
+                    // guest는 host에 대한 연결 하나만 잡고있으면 된다.
+                    // peerjs의 동시 접속 제한이 50개 까지므로 가능하면 서버연결을 유지하지 않는 것이 좋다.
+                    var dataQueue = [];
+                    conn.on('data', function (data) {
+                        dataQueue.push(data);
+                    });
+                    // guest_waiting이 실행되기 전에 들어온 이벤트들은 우선 큐에 쌓는다.
+                    setTimeout(guest_waiting, 0,
+                        conn, dataQueue
+                    );
+                });
+                peer.on('error', function (err) {
+                    peer.destroy();
+                    switch (err.type) {
+                    case 'peer-unavailable':
+                        alert([
+                            '해당 주소로 열려있는 판이 없거나 이미 시작된 판인 것 같습니다.',
+                            '정확한 주소가 입력됐는지 확인해주세요.'
+                        ].join('\n'));
+                        break;
+                    case 'disconnected':
+                        // TODO: 이미 시작된 판인게 아니면... 음... 어떤 경우에 여기로 타는지 확인
+                        alert([
+                            '이미 시작된 판에는 참여할 수 없답니다.',
+                            '새로운 판을 열거나 다른 판에 참여해주세요.'
+                        ].join('\n'));
+                        break;
+                    default:
+                        alert([
+                            '접속에 문제가 발생했는데 왜 그런지 모르겠네요.',
+                            '다시 시도해보시고 문제가 지속된다면 다음의 내용을 개발자(jong@chan.moe)한테 알려주세요.',
+                            '판 끼어들기 시에 ' + err.type + '발생'
+                        ].join('\n'));
+                        break;
+                    }
+                    $joinButton.prop('disabled', false);
+                });
+            });
+            $openButton.on('click', function () {
+                setTimeout(host_waiting, 0);
+            });
+        }, function (err) {
+            switch (err.type) {
+            case 'browser-incompatible':
+                $('#main-scene .support-checker .browser-incompatible').setCurrent();
+                break;
+            default:
+                $('#main-scene .support-checker .default .context').text([
+                    '처음 접속이 잘 되는지를 확인하던 중',
+                    'peer.js error: ' + err.type,
+                    'user-agent: ' + navigator.userAgent
+                ].join('\n'));
+                $('#main-scene .support-checker .default').setCurrent();
+                break;
+            }
+        });
+        function checkPeerJS() {
+            return new Promise(function (resolve, reject) {
+                var peer1 = newPeer();
+                var peer2 = newPeer();
+                function destroy() {
+                    peer1.destroy();
+                    peer2.destroy();
+                }
+                peer1.on('open', function (id) {
+                    var peerId = id;
+                    var conn = peer2.connect(peerId);
+                    conn.on('data', function () {
+                        destroy();
+                        resolve();
+                    });
+                    conn.on('error', function (err) {
+                        destroy();
+                        reject(err);
+                    });
+                });
+                peer1.on('connection', function (conn) {
+                    conn.on('open', function () {
+                        conn.send('ok');
+                    });
+                    conn.on('error', function (err) {
+                        destroy();
+                        reject(err);
+                    });
+                });
+                peer1.on('error', function (err) {
+                    destroy();
+                    reject(err);
+                });
+                peer2.on('error', function (err) {
+                    destroy();
+                    reject(err);
+                });
+            });
+        }
+    });
+    </script>
+    <!-- google analytics -->
+    <script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    ga('create', 'UA-57404356-2', 'auto');
+    ga('send', 'pageview');
+    </script>
+</body>
+</html>
