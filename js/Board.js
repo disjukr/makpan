@@ -7,8 +7,8 @@ function Board(width, height, nick, itsMe) {
     croquis.selectLayer(0);
     self.itsMe = itsMe;
     if (itsMe) {
-        croquis.setToolStabilizeLevel(20);
-        croquis.setToolStabilizeWeight(0.2);
+        croquis.setToolStabilizeLevel(10);
+        croquis.setToolStabilizeWeight(0.1);
     } else {
         croquis.setToolStabilizeLevel(0);
     }
