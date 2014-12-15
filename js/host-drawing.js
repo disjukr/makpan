@@ -89,9 +89,11 @@ function host_drawing(host_info, pan_info, guest_info) {
     var $layerStatusButton = $('button.layer-status', $scene);
     $layerStatusButton.on('mousedown', function () {
         boardArea.viewFromTheSide();
+        $('.layer-status-help .try-mouseup', $scene).setCurrent();
     });
     $layerStatusButton.on('mouseup', function () {
         boardArea.resetView();
+        $('.layer-status-help .try-mousedown', $scene).setCurrent();
     });
     var $allUI = $([
         $toEraserButton, $toBrushButton,

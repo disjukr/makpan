@@ -63,6 +63,10 @@
     #guest-drawing-scene {
         background-color: gray;
     }
+    #host-drawing-scene .layer-status-help,
+    #guest-drawing-scene .layer-status-help {
+        display: inline-block;
+    }
     #host-drawing-scene .board-area.brush,
     #guest-drawing-scene .board-area.brush {
         cursor: url(./img/brush.png) 3 3, pointer;
@@ -178,10 +182,13 @@
             <button class="to-brush">브러시</button>
         </div>
         <input type="color">
-        <p>
+        <div>
             <button class="layer-status">레이어 상태 보기</button>
-            놓으면 돌아옵니다.
-        </p>
+            <div class="sequence layer-status-help">
+                <span class="current try-mousedown">꾹 눌러보세요</span>
+                <span class="try-mouseup">놓으면 돌아옵니다.</span>
+            </div>
+        </div>
     </div>
     <div id="guest-drawing-scene" class="scene">
         <div class="board-area"></div>
@@ -190,10 +197,13 @@
             <button class="to-brush">브러시</button>
         </div>
         <input type="color">
-        <p>
+        <div>
             <button class="layer-status">레이어 상태 보기</button>
-            놓으면 돌아옵니다.
-        </p>
+            <div class="sequence layer-status-help">
+                <span class="current try-mousedown">꾹 눌러보세요</span>
+                <span class="try-mouseup">놓으면 돌아옵니다.</span>
+            </div>
+        </div>
     </div>
     <!-- util -->
     <script>
