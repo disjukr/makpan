@@ -1,12 +1,19 @@
-function Board(width, height, nick) {
+function Board(width, height, nick, itsMe) {
     var self = this;
     var croquis = new Croquis();
     croquis.setUndoLimit(0);
     croquis.setCanvasSize(width, height);
     croquis.addLayer();
     croquis.selectLayer(0);
-    self.__croquis__ = croquis;
-    self.__element__ = (function () {
+    self.itsMe = itsMe;
+    if (itsMe) {
+        croquis.setToolStabilizeLevel(20);
+        croquis.setToolStabilizeWeight(0.2);
+    } else {
+        croquis.setToolStabilizeLevel(0);
+    }
+    self.croquis = croquis;
+    self.element = (function () {
         var $div = $('<div class="board">');
         var $nick = $('<span class="nick">').text(nick).css({
             position: 'absolute',
@@ -27,28 +34,28 @@ function Board(width, height, nick) {
         });
         return element;
     })();
-    self.__brush__ = (function () {
+    self.brush = (function () {
         var brush = new Croquis.Brush();
         brush.setSize(3);
         brush.setColor('#000');
         brush.setSpacing(0.2);
         return brush;
     })();
-    self.__eraser__ = (function () {
+    self.eraser = (function () {
         var eraser = new Croquis.Brush();
         eraser.setSize(20);
         eraser.setColor('#000');
         eraser.setSpacing(0.2);
         return eraser;
     })();
-    croquis.setTool(self.__brush__);
+    croquis.setTool(self.brush);
 }
-Board.prototype.viewFromTheSide = function viewFromTheSide(order, itsMe) {
+Board.prototype.viewFromTheSide = function viewFromTheSide(order) {
     var self = this;
-    var element = self.__element__;
+    var element = self.element;
     var translateZ = 30 * order;
     $(element).css({
-        opacity: itsMe ? '1' : '0.2',
+        opacity: self.itsMe ? '1' : '0.2',
         transform: 'rotate3d(3.5, -0.5, 0, 60deg) translateZ(' + translateZ + 'px)'
     });
     $('.nick', element).css({
@@ -57,7 +64,7 @@ Board.prototype.viewFromTheSide = function viewFromTheSide(order, itsMe) {
 };
 Board.prototype.resetView = function resetView() {
     var self = this;
-    var element = self.__element__;
+    var element = self.element;
     $(element).css({
         opacity: '1',
         transform: 'none'
@@ -68,19 +75,19 @@ Board.prototype.resetView = function resetView() {
 };
 Board.prototype.selectBrush = function selectBrush() {
     var self = this;
-    var croquis = self.__croquis__;
+    var croquis = self.croquis;
     croquis.setPaintingKnockout(false);
-    croquis.setTool(self.__brush__);
+    croquis.setTool(self.brush);
 };
 Board.prototype.selectEraser = function selectEraser() {
     var self = this;
-    var croquis = self.__croquis__;
+    var croquis = self.croquis;
     croquis.setPaintingKnockout(true);
-    croquis.setTool(self.__eraser__);
+    croquis.setTool(self.eraser);
 };
 Board.prototype.brushColor = function brushColor(color) {
     var self = this;
-    var brush = self.__brush__;
+    var brush = self.brush;
     if (color === undefined)
         return brush.getColor();
     brush.setColor(color);
@@ -111,19 +118,13 @@ function BoardArea(element, width, height, count, myOrder, send, order2nickMap) 
         var currentBoard;
         var $currentBoardElement;
         for (var i = 0; i < count; ++i) {
-            currentBoard = new Board(width, height, order2nickMap.get(i));
-            if (i === myOrder) {
-                self.board = currentBoard;
-                self.board.__croquis__.setToolStabilizeLevel(20);
-                self.board.__croquis__.setToolStabilizeWeight(0.2);
-            } else {
-                currentBoard.__croquis__.setToolStabilizeLevel(0);
-            }
+            currentBoard = new Board(width, height, order2nickMap.get(i), i === myOrder);
+            if (i === myOrder) self.board = currentBoard;
             boards.push(currentBoard);
-            $areaElement.append(currentBoard.__element__);
+            $areaElement.append(currentBoard.element);
         }
     })();
-    var croquis = self.board.__croquis__;
+    var croquis = self.board.croquis;
     croquis.addEventListener('ondown', function (e) {
         send({
             type: 'board_command',
@@ -163,7 +164,7 @@ BoardArea.prototype.doCommand = function doCommand(data) {
     var self = this;
     if (data.order === self.order) return;
     var board = self.boards[data.order];
-    var croquis = board.__croquis__;
+    var croquis = board.croquis;
     switch (data.command) {
     case 'down':
         croquis.down(data.x, data.y, data.pressure);
@@ -188,7 +189,7 @@ BoardArea.prototype.doCommand = function doCommand(data) {
 BoardArea.prototype.viewFromTheSide = function viewFromTheSide() {
     var self = this;
     self.boards.forEach(function (board, order) {
-        board.viewFromTheSide(order, order === self.order);
+        board.viewFromTheSide(order);
     });
 };
 BoardArea.prototype.resetView = function resetView() {

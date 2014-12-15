@@ -36,7 +36,7 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
             console.log('TODO: ' + data.type);
         }
     }
-    var croquis = boardArea.getMyBoard().__croquis__;
+    var croquis = boardArea.getMyBoard().croquis;
     $window.on('mousedown', function (e) {
         if (e.clientX < 0 || e.clientX > pan_info.width) return;
         if (e.clientY < 0 || e.clientY > pan_info.height) return;
