@@ -1,5 +1,6 @@
 function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
-    $('#guest-drawing-scene').setCurrent();
+    var $scene = $('#guest-drawing-scene');
+    $scene.setCurrent();
     conn.removeAllListeners('data');
     conn.on('data', handleData);
     var id2nickMap = new Map();
@@ -17,7 +18,7 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
         return order2nickMap;
     })();
     var boardArea = new BoardArea(
-        $('#guest-drawing-scene .board-area')[0],
+        $('.board-area', $scene)[0],
         pan_info.width, pan_info.height,
         guestList.length + 1, // host가 있으니 1 더함
         id2orderMap.get(myId),
@@ -25,7 +26,6 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
         order2nickMap
     );
     var $boardArea = $(boardArea);
-    var $window = $(window);
     dataQueue.reverse();
     dataQueue.forEach(handleData);
     dataQueue = null; // flush data queue
@@ -37,40 +37,43 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
         }
     }
     var croquis = boardArea.getMyBoard().croquis;
-    $window.on('mousedown', function (e) {
-        if (e.clientX < 0 || e.clientX > pan_info.width) return;
-        if (e.clientY < 0 || e.clientY > pan_info.height) return;
+    $scene.on('mousedown', function (e) {
         croquis.down(e.clientX, e.clientY);
-        $window.on('mousemove', function (e) {
+        $scene.on('mousemove', function (e) {
             croquis.move(e.clientX, e.clientY);
         });
-        $window.on('mouseup', function (e) {
+        $scene.on('mouseup', function (e) {
             croquis.up(e.clientX, e.clientY);
-            $window.off('mousemove mouseup');
+            $scene.off('mousemove mouseup');
         });
     });
-    var $toEraserButton = $('#guest-drawing-scene button.to-eraser');
-    var $toBrushButton = $('#guest-drawing-scene button.to-brush');
-    $toEraserButton.click(function (e) {
-        e.preventDefault();
+    var $toEraserButton = $('button.to-eraser', $scene);
+    var $toBrushButton = $('button.to-brush', $scene);
+    $toEraserButton.on('click', function (e) {
         $toBrushButton.setCurrent();
         boardArea.selectEraser();
     });
-    $toBrushButton.click(function (e) {
-        e.preventDefault();
+    $toBrushButton.on('click', function (e) {
         $toEraserButton.setCurrent();
         boardArea.selectBrush();
     });
-    var $colorInput = $('#guest-drawing-scene input[type=color]');
+    var $colorInput = $('input[type=color]', $scene);
     $colorInput.val(boardArea.brushColor());
     $colorInput.on('change', function () {
         boardArea.brushColor($colorInput.val());
     });
-    var $layerStatusButton = $('#guest-drawing-scene button.layer-status');
+    var $layerStatusButton = $('button.layer-status', $scene);
     $layerStatusButton.on('mousedown', function () {
         boardArea.viewFromTheSide();
     });
     $layerStatusButton.on('mouseup', function () {
         boardArea.resetView();
+    });
+    var $allUI = $([
+        $toEraserButton, $toBrushButton,
+        $colorInput,
+        $layerStatusButton
+    ].map(function ($i) { return $($i)[0]; })).on('mousedown', function (e) {
+        e.stopPropagation(); // prevent scene mousedown
     });
 }

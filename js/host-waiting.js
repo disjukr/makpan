@@ -1,14 +1,15 @@
 function host_waiting() {
-    $('#host-waiting-scene').setCurrent();
-    var $startButton = $('#host-waiting-scene button.start');
+    var $scene = $('#host-waiting-scene');
+    $scene.setCurrent();
+    var $startButton = $('button.start', $scene);
     var peer = newPeer();
     peer.on('open', function (id) {
-        $('#host-waiting-scene .room-address').setCurrent();
-        $('#host-waiting-scene .room-address span').text(id);
+        $('.room-address', $scene).setCurrent();
+        $('.room-address span', $scene).text(id);
         $startButton.prop('disabled', false);
     });
     var hostDefaultNick = caragen();
-    $('#host-waiting-scene input.nick').val(hostDefaultNick);
+    $('input.nick', $scene).val(hostDefaultNick);
     var guestCount = 0;
     var connSet = new Set();
     var idMap = new WeakMap();
@@ -51,10 +52,10 @@ function host_waiting() {
         });
     });
     function $hostNickUpdate() {
-        $('#host-waiting-scene .host-nick').text(host_nick());
+        $('.host-nick', $scene).text(host_nick());
     }
     function $guestListUpdate() {
-        $guestList = $('#host-waiting-scene ul.guest-list');
+        $guestList = $('ul.guest-list', $scene);
         $guestList.html('');
         connSet.forEach(function (conn) {
             $guestList.append($('<li>').text(nickMap.get(conn)));
@@ -85,13 +86,13 @@ function host_waiting() {
         '#host-waiting-scene .pan-size .height'
     ].join(', ')).on('change input keyup', send_pan_status);
     function host_nick() {
-        return $('#host-waiting-scene input.nick').val() || hostDefaultNick;
+        return $('input.nick', $scene).val() || hostDefaultNick;
     }
     function pan_width() {
-        return Math.abs($('#host-waiting-scene .pan-size .width').val()) | 0;
+        return Math.abs($('.pan-size .width', $scene).val()) | 0;
     }
     function pan_height() {
-        return Math.abs($('#host-waiting-scene .pan-size .height').val()) | 0;
+        return Math.abs($('.pan-size .height', $scene).val()) | 0;
     }
     $startButton.prop('disabled', true);
     $startButton.on('click', function () {

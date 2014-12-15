@@ -1,12 +1,13 @@
 function guest_waiting(conn, dataQueue) {
-    $('#guest-waiting-scene').setCurrent();
+    var $scene = $('#guest-waiting-scene');
+    $scene.setCurrent();
     dataQueue.reverse();
     dataQueue.forEach(handleData);
     dataQueue = null; // flush data queue
     conn.removeAllListeners('data');
     conn.on('data', handleData);
     var myId;
-    var $nick = $('#guest-waiting-scene input.nick');
+    var $nick = $('input.nick', $scene);
     function handleData(data) {
         switch (data.type) {
         case 'identity':
@@ -17,10 +18,10 @@ function guest_waiting(conn, dataQueue) {
             break;
         case 'pan_status':
             (function () {
-                $('#guest-waiting-scene .host-nick').text(data.hostNick);
-                $('#guest-waiting-scene .pan-size .width').text(data.width);
-                $('#guest-waiting-scene .pan-size .height').text(data.height);
-                $('#guest-waiting-scene ul.guest-list').html('').append(data.guestList.map(function (guest) {
+                $('.host-nick', $scene).text(data.hostNick);
+                $('.pan-size .width', $scene).text(data.width);
+                $('.pan-size .height', $scene).text(data.height);
+                $('ul.guest-list', $scene).html('').append(data.guestList.map(function (guest) {
                     if (guest.id === myId)
                         return $('<li class="me">').text(guest.nick + '(나)');
                     return $('<li>').text(guest.nick);
