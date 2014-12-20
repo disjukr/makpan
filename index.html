@@ -9,6 +9,8 @@
     <script src="./lib/es6-shim.min.js"></script><!-- es6-shim 0.21.1 -->
     <script src="./lib/croquis.js"></script><!-- croquis.js 0.3.0 -->
     <script src="./lib/caragen.js"></script>
+    <script src="./lib/FileSaver.min.js"></script>
+    <script src="./lib/psdw.js"></script>
     <title>Makpan</title>
     <style type="text/css">
     html, body {
@@ -189,6 +191,9 @@
                 <span class="try-mouseup">놓으면 돌아옵니다.</span>
             </div>
         </div>
+        <div>
+            <button class="save-as-psd">포토샵 파일로 저장하기</button>
+        </div>
     </div>
     <div id="guest-drawing-scene" class="scene">
         <div class="board-area"></div>
@@ -203,6 +208,9 @@
                 <span class="current try-mousedown">꾹 눌러보세요</span>
                 <span class="try-mouseup">놓으면 돌아옵니다.</span>
             </div>
+        </div>
+        <div>
+            <button class="save-as-psd">포토샵 파일로 저장하기</button>
         </div>
     </div>
     <!-- util -->

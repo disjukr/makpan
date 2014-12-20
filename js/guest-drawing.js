@@ -71,6 +71,11 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
         boardArea.resetView();
         $('.layer-status-help .try-mousedown', $scene).setCurrent();
     });
+    var $save2PsdButton = $('button.save-as-psd', $scene);
+    $save2PsdButton.on('click', function () {
+        var blobToSave = boardArea.getPsdBlob();
+        saveAs(blobToSave, '막판.psd');
+    });
     var $allUI = $([
         $toEraserButton, $toBrushButton,
         $colorInput,

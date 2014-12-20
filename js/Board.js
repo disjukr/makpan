@@ -5,6 +5,9 @@ function Board(width, height, nick, itsMe) {
     croquis.setCanvasSize(width, height);
     croquis.addLayer();
     croquis.selectLayer(0);
+    self.width = width;
+    self.height = height;
+    self.nick = nick;
     self.itsMe = itsMe;
     if (itsMe) {
         croquis.setToolStabilizeLevel(10);
@@ -50,6 +53,23 @@ function Board(width, height, nick, itsMe) {
     })();
     croquis.setTool(self.brush);
 }
+Board.prototype.getPsdwLayer = function getPsdwLayer() {
+    var self = this;
+    var flattenThumbnail = self.croquis.createFlattenThumbnail(self.width, self.height);
+    var ctx = flattenThumbnail.getContext('2d');
+    var imageData = ctx.getImageData(0, 0, self.width, self.height).data;
+    return {
+        name: self.nick,
+        imageData: imageData,
+        width: self.width,
+        height: self.height,
+        x: 0,
+        y: 0,
+        opacity: 1,
+        blendMode: 'normal',
+        __flatten__: flattenThumbnail
+    };
+};
 Board.prototype.viewFromTheSide = function viewFromTheSide(order) {
     var self = this;
     var element = self.element;
@@ -156,6 +176,30 @@ function BoardArea(element, width, height, count, myOrder, send, order2nickMap) 
         });
     });
 }
+BoardArea.prototype.getPsdBlob = function getPsdBlob() {
+    var self = this;
+    var layers = self.boards.map(function (board) {
+        return board.getPsdwLayer();
+    });
+    var flattenLayer = document.createElement('canvas');
+    flattenLayer.width = self.width;
+    flattenLayer.height = self.height;
+    var flattenLayerContext = flattenLayer.getContext('2d');
+    flattenLayerContext.fillStyle = '#fff';
+    flattenLayerContext.fillRect(0, 0, self.width, self.height);
+    var psdDocumentObject = {
+        width: self.width,
+        height: self.height,
+        layers: layers,
+        flattenedImageData: (function () {
+            layers.forEach(function (layer) {
+                flattenLayerContext.drawImage(layer.__flatten__, 0, 0);
+            });
+            return flattenLayerContext.getImageData(0, 0, self.width, self.height).data;
+        })()
+    };
+    return psdw(psdDocumentObject).blob;
+};
 BoardArea.prototype.getMyBoard = function getMyBoard() {
     var self = this;
     return self.boards[self.order];

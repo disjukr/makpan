@@ -95,6 +95,11 @@ function host_drawing(host_info, pan_info, guest_info) {
         boardArea.resetView();
         $('.layer-status-help .try-mousedown', $scene).setCurrent();
     });
+    var $save2PsdButton = $('button.save-as-psd', $scene);
+    $save2PsdButton.on('click', function () {
+        var blobToSave = boardArea.getPsdBlob();
+        saveAs(blobToSave, '막판.psd');
+    });
     var $allUI = $([
         $toEraserButton, $toBrushButton,
         $colorInput,
