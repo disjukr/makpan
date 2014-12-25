@@ -61,14 +61,14 @@ function host_drawing(host_info, pan_info, guest_info) {
         });
     }
     var croquis = boardArea.getMyBoard().croquis;
-    $scene.on('mousedown', function (e) {
+    $scene.on('pointerdown', function (e) {
         croquis.down(e.clientX, e.clientY);
-        $scene.on('mousemove', function (e) {
+        $scene.on('pointermove', function (e) {
             croquis.move(e.clientX, e.clientY);
         });
-        $scene.on('mouseup', function (e) {
+        $scene.on('pointerup', function (e) {
             croquis.up(e.clientX, e.clientY);
-            $scene.off('mousemove mouseup');
+            $scene.off('pointermove pointerup');
         });
     });
     var $toEraserButton = $('button.to-eraser', $scene);
@@ -87,13 +87,13 @@ function host_drawing(host_info, pan_info, guest_info) {
         boardArea.brushColor($colorInput.val());
     });
     var $layerStatusButton = $('button.layer-status', $scene);
-    $layerStatusButton.on('mousedown', function () {
+    $layerStatusButton.on('pointerdown', function () {
         boardArea.viewFromTheSide();
-        $('.layer-status-help .try-mouseup', $scene).setCurrent();
+        $('.layer-status-help .try-pointerup', $scene).setCurrent();
     });
-    $layerStatusButton.on('mouseup', function () {
+    $layerStatusButton.on('pointerup', function () {
         boardArea.resetView();
-        $('.layer-status-help .try-mousedown', $scene).setCurrent();
+        $('.layer-status-help .try-pointerdown', $scene).setCurrent();
     });
     var $save2PsdButton = $('button.save-as-psd', $scene);
     $save2PsdButton.on('click', function () {
@@ -104,7 +104,7 @@ function host_drawing(host_info, pan_info, guest_info) {
         $toEraserButton, $toBrushButton,
         $colorInput,
         $layerStatusButton
-    ].map(function ($i) { return $($i)[0]; })).on('mousedown', function (e) {
-        e.stopPropagation(); // prevent scene mousedown
+    ].map(function ($i) { return $($i)[0]; })).on('pointerdown', function (e) {
+        e.stopPropagation(); // prevent scene pointerdown
     });
 }
