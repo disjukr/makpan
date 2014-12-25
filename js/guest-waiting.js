@@ -1,13 +1,13 @@
 function guest_waiting(conn, dataQueue) {
     var $scene = $('#guest-waiting-scene');
     $scene.setCurrent();
+    var myId;
+    var $nick = $('input.nick', $scene);
     dataQueue.reverse();
     dataQueue.forEach(handleData);
     dataQueue = null; // flush data queue
     conn.removeAllListeners('data');
     conn.on('data', handleData);
-    var myId;
-    var $nick = $('input.nick', $scene);
     function handleData(data) {
         switch (data.type) {
         case 'identity':
