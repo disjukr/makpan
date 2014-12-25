@@ -61,6 +61,9 @@ function host_drawing(host_info, pan_info, guest_info) {
         });
     }
     var croquis = boardArea.getMyBoard().croquis;
+    $scene.on('touchmove', function (e) {
+        e.preventDefault();
+    });
     $scene.on('pointerdown', function (e) {
         croquis.down(e.clientX, e.clientY);
         $scene.on('pointermove', function (e) {

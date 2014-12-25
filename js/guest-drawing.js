@@ -37,6 +37,9 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
         }
     }
     var croquis = boardArea.getMyBoard().croquis;
+    $scene.on('touchmove', function (e) {
+        e.preventDefault();
+    });
     $scene.on('pointerdown', function (e) {
         croquis.down(e.clientX, e.clientY);
         $scene.on('pointermove', function (e) {
