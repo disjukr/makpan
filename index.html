@@ -108,7 +108,9 @@
             <div class="form">
                 <h2>판 열기</h2>
                 <div class="open-form">
+                    <label>판 주소 <input class="host-id" type="text"></label>
                     <button class="open">열기</button>
+                    <p>판 주소는 알파벳과 숫자, 밑줄 문자`_`를 조합해서 만들어주세요.</p>
                 </div>
                 <h2>판 참여하기</h2>
                 <div class="join-form">
@@ -144,10 +146,7 @@
         <h1>대기실</h1>
         <hr>
         <h2>판 주소</h2>
-        <div class="sequence">
-            <p class="current">판 주소를 생성하는 중입니다…</p>
-            <p class="room-address">판 주소: <span/></p>
-            </div>
+        <p class="room-address">판 주소: <span/></p>
         <p>같이 그릴 사람들에게 판 주소를 알려주세요!</p>
         <h2>설정</h2>
         <h3>내 별명</h3>
@@ -225,13 +224,12 @@
         var $children = this.children();
         return $children.eq(Math.floor(Math.random() * $children.length));
     };
-    function newPeer() {
-        // peerjs api key for beta
-        // return new Peer({key: '1w9wjvxcsg11nhfr'});
-        // localhost peerjs-server for dev
-        // return new Peer({host: 'localhost', port: 1234});
-        // devunt server
-        return new Peer({host: 'kanade.devunt.kr', port: 1234});
+    function newPeer(id, option) {
+        var _option = option || {host: 'kanade.devunt.kr', port: 1234};
+        if (id === undefined)
+            return new Peer(_option);
+        else
+            return new Peer(id, _option);
     }
     </script>
     <script src="./js/Board.js"></script>
@@ -302,7 +300,40 @@
                 });
             });
             $openButton.on('click', function () {
-                setTimeout(host_waiting, 0);
+                var hostId = $('#main-scene .open-form input.host-id').val().trim().split(/\s/).join('_');
+                var peer = newPeer(hostId === '' ? undefined : hostId);
+                peer.on('open', function () {
+                    peer.removeAllListeners();
+                    setTimeout(host_waiting, 0, peer);
+                });
+                peer.on('error', function (err) {
+                    peer.destroy();
+                    switch (err.type) {
+                    case 'invalid-id':
+                        alert([
+                            '판 주소는 알파벳과 숫자만 사용해서 만들어주세요.',
+                            '알파벳과 숫자밖에 입력하지 않았는데 이 메세지가 뜬다면 주소가 너무 길지 않은지 확인해주세요.'
+                        ].join('\n'));
+                        break;
+                    case 'unavailable-id':
+                        alert([
+                            '같은 주소를 사용하는 판이 이미 열려있습니다.',
+                            '다른 주소를 입력해주세요.'
+                        ].join('\n'));
+                        break;
+                    case 'network':
+                        // unavailable-id가 발생하면 따라서 발생함.
+                        // TODO: 이거 그냥 씹어먹어도 문제 없으려나?
+                        break;
+                    default:
+                        alert([
+                            '판 생성에 문제가 발생했는데 왜 그런지 모르겠네요.',
+                            '다시 시도해보시고 문제가 지속된다면 다음의 내용을 개발자(jong@chan.moe)한테 알려주세요.',
+                            '판 열기 시에 ' + err.type + '발생'
+                        ].join('\n'));
+                        break;
+                    }
+                });
             });
         }, function (err) {
             switch (err.type) {

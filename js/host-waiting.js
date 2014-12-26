@@ -1,13 +1,8 @@
-function host_waiting() {
+function host_waiting(peer) {
     var $scene = $('#host-waiting-scene');
     $scene.setCurrent();
     var $startButton = $('button.start', $scene);
-    var peer = newPeer();
-    peer.on('open', function (id) {
-        $('.room-address', $scene).setCurrent();
-        $('.room-address span', $scene).text(id);
-        $startButton.prop('disabled', false);
-    });
+    $('.room-address span', $scene).text(peer.id);
     var hostDefaultNick = caragen();
     $('input.nick', $scene).val(hostDefaultNick);
     var guestCount = 0;
@@ -94,7 +89,6 @@ function host_waiting() {
     function pan_height() {
         return Math.abs($('.pan-size .height', $scene).val()) | 0;
     }
-    $startButton.prop('disabled', true);
     $startButton.on('click', function () {
         var width = pan_width();
         var height = pan_height;
