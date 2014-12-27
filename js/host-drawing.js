@@ -110,6 +110,12 @@ function host_drawing(host_info, pan_info, guest_info) {
     ].map(function ($i) { return $($i)[0]; })).on('pointerdown', function (e) {
         e.stopPropagation(); // prevent scene pointerdown
     });
+    key('⌘+z, ctrl+z', function () {
+        try { croquis.undo(); } catch (e) {}
+    });
+    key('⌘+shift+z, ctrl+shift+z', function () {
+        try { croquis.redo(); } catch (e) {}
+    });
     window.onbeforeunload = function () {
         return '판장이 판을 나가면 남은 사람들은 더 이상 그림을 같이 그릴 수가 없어요.';
     };

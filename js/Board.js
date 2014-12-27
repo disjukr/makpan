@@ -5,6 +5,7 @@ function Board(width, height, nick, itsMe) {
     croquis.setCanvasSize(width, height);
     croquis.addLayer();
     croquis.selectLayer(0);
+    croquis.setUndoLimit(10);
     self.width = width;
     self.height = height;
     self.nick = nick;
@@ -175,6 +176,20 @@ function BoardArea(element, width, height, count, myOrder, send, order2nickMap) 
             pressure: e.pressure
         });
     });
+    croquis.addEventListener('onundo', function () {
+        send({
+            type: 'board_command',
+            command: 'undo',
+            order: self.order
+        });
+    });
+    croquis.addEventListener('onredo', function () {
+        send({
+            type: 'board_command',
+            command: 'redo',
+            order: self.order
+        });
+    });
 }
 BoardArea.prototype.getPsdBlob = function getPsdBlob() {
     var self = this;
@@ -218,6 +233,12 @@ BoardArea.prototype.doCommand = function doCommand(data) {
         break;
     case 'up':
         croquis.up(data.x, data.y, data.pressure);
+        break;
+    case 'undo':
+        croquis.undo();
+        break;
+    case 'redo':
+        croquis.redo();
         break;
     case 'select-eraser':
         board.selectEraser();

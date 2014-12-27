@@ -86,6 +86,12 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
     ].map(function ($i) { return $($i)[0]; })).on('pointerdown', function (e) {
         e.stopPropagation(); // prevent scene pointerdown
     });
+    key('⌘+z, ctrl+z', function () {
+        try { croquis.undo(); } catch (e) {}
+    });
+    key('⌘+shift+z, ctrl+shift+z', function () {
+        try { croquis.redo(); } catch (e) {}
+    });
     window.onbeforeunload = function () {
         return '이 판은 이미 시작된 판이기 때문에 한 번 나가면 다시 들어올 수 없을거에요.';
     };
