@@ -3,6 +3,9 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
     $scene.setCurrent();
     conn.removeAllListeners('data');
     conn.on('data', handleData);
+    conn.on('close', function () {
+        alert('판이 종료되었습니다.');
+    });
     var id2nickMap = new Map();
     var id2orderMap = new Map();
     guestList.forEach(function (guest) {
@@ -93,6 +96,7 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
         try { croquis.redo(); } catch (e) {}
     });
     window.onbeforeunload = function () {
-        return '이 판은 이미 시작된 판이기 때문에 한 번 나가면 다시 들어올 수 없을거에요.';
+        if (conn.open)
+            return '이 판은 이미 시작된 판이기 때문에 한 번 나가면 다시 들어올 수 없을거에요.';
     };
 }
