@@ -255,7 +255,10 @@
                     return;
                 }
                 var peer = newPeer();
-                var conn = peer.connect(hostId, {reliable: true});
+                var conn = peer.connect(hostId, {
+                    serialization: 'json', // 네트워크 레이턴시따위...=3 데이터 패킹에 드는 퍼포먼스 저하는 피하고 싶다.
+                    reliable: true // 데이터 손실은 가능하면 피하자.
+                });
                 $joinButton.prop('disabled', true);
                 conn.on('open', function () {
                     conn.removeAllListeners('open');
