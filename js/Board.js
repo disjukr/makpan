@@ -24,7 +24,7 @@ function Board(width, height, nick, itsMe) {
             width: '200px',
             left: width + 'px',
             bottom: 0,
-            transition: 'opacity 0.3s',
+            transition: 'opacity 0.5s',
             opacity: 0
         });
         $div.append(croquis.getDOMElement(), $nick);
@@ -33,8 +33,9 @@ function Board(width, height, nick, itsMe) {
             position: 'absolute',
             top: '0',
             left: '0',
-            transition: 'opacity 0.6s, transform 0.6s',
-            border: '1px solid rgba(0, 0, 0, 0.5)'
+            transition: 'opacity 0.5s, transform 0.5s',
+            border: '1px solid rgba(0, 0, 0, 0.5)',
+            transform: 'translate(-1px, -1px)'
         });
         return element;
     })();
@@ -77,7 +78,7 @@ Board.prototype.viewFromTheSide = function viewFromTheSide(order) {
     var translateZ = 30 * order;
     $(element).css({
         opacity: self.itsMe ? '1' : '0.2',
-        transform: 'rotate3d(3.5, -0.5, 0, 60deg) translateZ(' + translateZ + 'px)'
+        transform: 'translate(-1px, -1px) rotate3d(3.5, -0.5, 0, 60deg) translateZ(' + translateZ + 'px)'
     });
     $('.nick', element).css({
         opacity: 1
@@ -88,7 +89,7 @@ Board.prototype.resetView = function resetView() {
     var element = self.element;
     $(element).css({
         opacity: '1',
-        transform: 'none'
+        transform: 'translate(-1px, -1px)'
     });
     $('.nick', element).css({
         opacity: 0
@@ -128,12 +129,9 @@ function BoardArea(element, width, height, count, myOrder, send, order2nickMap) 
     var $areaElement = $(element);
     $areaElement.addClass('brush');
     $areaElement.css({
-        position: 'relative',
         width: width + 'px',
         height: height + 'px',
-        'background-color': '#fff',
-        'user-select': 'none',
-        'perspective': 1024 + 'px'
+        'background-color': '#fff'
     });
     (function () {
         var currentBoard;
@@ -191,6 +189,23 @@ function BoardArea(element, width, height, count, myOrder, send, order2nickMap) 
         });
     });
 }
+BoardArea.prototype.toCanvasCoord = function toCanvasCoord(sceneX, sceneY) {
+    var self = this;
+    var sx = sceneX;
+    var sy = sceneY;
+    var sw = $(document.body).width();
+    var sh = $(document.body).height();
+    var hsw = sw * 0.5;
+    var hsh = sh * 0.5;
+    var bw = self.width;
+    var bh = self.height;
+    var hbw = bw * 0.5;
+    var hbh = bh * 0.5;
+    return {
+        x: sx - hsw + hbw,
+        y: sy - hsh + hbh
+    };
+};
 BoardArea.prototype.getPsdBlob = function getPsdBlob() {
     var self = this;
     var layers = self.boards.map(function (board) {

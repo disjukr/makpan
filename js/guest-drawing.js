@@ -44,12 +44,15 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
         e.preventDefault();
     });
     $scene.on('pointerdown', function (e) {
-        croquis.down(e.clientX, e.clientY);
+        var coord = boardArea.toCanvasCoord(e.clientX, e.clientY);
+        croquis.down(coord.x, coord.y);
         $scene.on('pointermove', function (e) {
-            croquis.move(e.clientX, e.clientY);
+            var coord = boardArea.toCanvasCoord(e.clientX, e.clientY);
+            croquis.move(coord.x, coord.y);
         });
         $scene.on('pointerup', function (e) {
-            croquis.up(e.clientX, e.clientY);
+            var coord = boardArea.toCanvasCoord(e.clientX, e.clientY);
+            croquis.up(coord.x, coord.y);
             $scene.off('pointermove pointerup');
         });
     });
@@ -68,14 +71,14 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
     $colorInput.on('change', function () {
         boardArea.brushColor($colorInput.val());
     });
-    var $layerStatusButton = $('button.layer-status', $scene);
-    $layerStatusButton.on('pointerdown', function () {
+    var $sideViewButton = $('button.side-view', $scene);
+    $sideViewButton.on('pointerdown', function () {
         boardArea.viewFromTheSide();
-        $('.layer-status-help .try-pointerup', $scene).setCurrent();
+        $('.side-view-help .try-pointerup', $scene).setCurrent();
     });
-    $layerStatusButton.on('pointerup', function () {
+    $sideViewButton.on('pointerup', function () {
         boardArea.resetView();
-        $('.layer-status-help .try-pointerdown', $scene).setCurrent();
+        $('.side-view-help .try-pointerdown', $scene).setCurrent();
     });
     var $save2PsdButton = $('button.save-as-psd', $scene);
     $save2PsdButton.on('click', function () {
@@ -83,9 +86,7 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
         saveAs(blobToSave, '막판.psd');
     });
     var $allUI = $([
-        $toEraserButton, $toBrushButton,
-        $colorInput,
-        $layerStatusButton
+        $('.tool-box', $scene)
     ].map(function ($i) { return $($i)[0]; })).on('pointerdown', function (e) {
         e.stopPropagation(); // prevent scene pointerdown
     });
