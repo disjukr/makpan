@@ -67,6 +67,20 @@
     #guest-drawing-scene {
         background-color: gray;
     }
+    .drawing.scene.brush {
+        cursor: url(./img/brush.png) 3 3, pointer;
+    }
+    .drawing.scene.eraser {
+        cursor: url(./img/eraser.png) 3 3, pointer;
+    }
+    .drawing.scene.hand {
+        cursor: -webkit-grab;
+        cursor: grab;
+    }
+    .drawing.scene.hand.grab {
+        cursor: -webkit-grabbing;
+        cursor: grabbing;
+    }
     .board-area {
         position: relative;
         top: 50%;
@@ -76,20 +90,6 @@
         user-select: none;
         -webkit-user-select: none;
         -moz-user-select: none;
-    }
-    .board-area.brush {
-        cursor: url(./img/brush.png) 3 3, pointer;
-    }
-    .board-area.eraser {
-        cursor: url(./img/eraser.png) 3 3, pointer;
-    }
-    .board-area.hand {
-        cursor: -webkit-grab;
-        cursor: grab;
-    }
-    .board-area.hand.grab {
-        cursor: -webkit-grabbing;
-        cursor: grabbing;
     }
     .tool-box {
         position: fixed;
@@ -208,7 +208,7 @@
         <h3>참여자</h3>
         <ul class="guest-list"></ul>
     </div>
-    <div id="host-drawing-scene" class="scene">
+    <div id="host-drawing-scene" class="drawing scene">
         <div class="board-area"></div>
         <div class="tool-box">
             <button class="to-brush">브러시</button>
@@ -227,7 +227,7 @@
             </div>
         </div>
     </div>
-    <div id="guest-drawing-scene" class="scene">
+    <div id="guest-drawing-scene" class="drawing scene">
         <div class="board-area"></div>
         <div class="tool-box">
             <button class="to-brush">브러시</button>

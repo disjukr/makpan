@@ -45,6 +45,7 @@ function host_drawing(host_info, pan_info, guest_info) {
         });
     })();
     var boardArea = new BoardArea(
+        $scene,
         $('.board-area', $scene)[0],
         pan_info.width, pan_info.height,
         connSet.size + 1, // host가 있으니 1 더함
@@ -72,7 +73,7 @@ function host_drawing(host_info, pan_info, guest_info) {
             croquis.down(coord.x, coord.y);
             break;
         case 'hand':
-            $(boardArea.element).addClass('grab');
+            $scene.addClass('grab');
             break;
         }
         $scene.on('pointermove', function (e) {
@@ -100,7 +101,7 @@ function host_drawing(host_info, pan_info, guest_info) {
                 croquis.up(coord.x, coord.y);
                 break;
             case 'hand':
-                $(boardArea.element).removeClass('grab');
+                $scene.removeClass('grab');
                 break;
             }
             $scene.off('pointermove pointerup');

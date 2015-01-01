@@ -116,7 +116,7 @@ Board.prototype.brushColor = function brushColor(color) {
     return color;
 };
 
-function BoardArea(element, width, height, count, myOrder, send, order2nickMap) {
+function BoardArea($scene, element, width, height, count, myOrder, send, order2nickMap) {
     var self = this;
     var boards = [];
     self.boards = boards;
@@ -124,10 +124,10 @@ function BoardArea(element, width, height, count, myOrder, send, order2nickMap) 
     // self.board
     self.width = width;
     self.height = height;
+    self.$scene = $scene;
     self.element = element;
     self.send = send;
     var $areaElement = $(element);
-    $areaElement.addClass('brush');
     $areaElement.css({
         width: width + 'px',
         height: height + 'px',
@@ -188,6 +188,7 @@ function BoardArea(element, width, height, count, myOrder, send, order2nickMap) 
             order: self.order
         });
     });
+    self.selectBrush();
 }
 BoardArea.prototype.getPsdBlob = function getPsdBlob() {
     var self = this;
@@ -322,20 +323,20 @@ BoardArea.prototype.resetView = function resetView() {
 };
 BoardArea.prototype.currentTool = function currentTool() {
     var self = this;
-    var $areaElement = $(self.element);
-    if ($areaElement.hasClass('brush')) return 'brush';
-    if ($areaElement.hasClass('eraser')) return 'eraser';
-    if ($areaElement.hasClass('hand')) return 'hand';
+    var $scene = self.$scene;
+    if ($scene.hasClass('brush')) return 'brush';
+    if ($scene.hasClass('eraser')) return 'eraser';
+    if ($scene.hasClass('hand')) return 'hand';
     self.selectBrush();
     return 'brush';
 };
 BoardArea.prototype.selectTool = function selectTool(cls) {
     var self = this;
-    var $areaElement = $(self.element);
-    $areaElement.removeClass('brush');
-    $areaElement.removeClass('eraser');
-    $areaElement.removeClass('hand');
-    $areaElement.addClass(cls);
+    var $scene = self.$scene;
+    $scene.removeClass('brush');
+    $scene.removeClass('eraser');
+    $scene.removeClass('hand');
+    $scene.addClass(cls);
 };
 BoardArea.prototype.selectBrush = function selectBrush() {
     var self = this;

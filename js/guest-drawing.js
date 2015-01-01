@@ -21,6 +21,7 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
         return order2nickMap;
     })();
     var boardArea = new BoardArea(
+        $scene,
         $('.board-area', $scene)[0],
         pan_info.width, pan_info.height,
         guestList.length + 1, // host가 있으니 1 더함
@@ -51,7 +52,7 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
             croquis.down(coord.x, coord.y);
             break;
         case 'hand':
-            $(boardArea.element).addClass('grab');
+            $scene.addClass('grab');
             break;
         }
         $scene.on('pointermove', function (e) {
@@ -79,7 +80,7 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
                 croquis.up(coord.x, coord.y);
                 break;
             case 'hand':
-                $(boardArea.element).removeClass('grab');
+                $scene.removeClass('grab');
                 break;
             }
             $scene.off('pointermove pointerup');
