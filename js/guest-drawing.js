@@ -45,17 +45,19 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
         e.preventDefault();
     });
     $scene.on('pointerdown', function (e) {
+        var pressure = e.originalEvent.pointerType === 'pen' ? e.originalEvent.pressure : 1;
         var coord = boardArea.toCanvasCoord(e.clientX, e.clientY);
         var beforeCoord = { x: e.clientX, y: e.clientY };
         switch (boardArea.currentTool()) {
         case 'brush': case 'eraser':
-            croquis.down(coord.x, coord.y);
+            croquis.down(coord.x, coord.y, pressure);
             break;
         case 'hand':
             $scene.addClass('grab');
             break;
         }
         $scene.on('pointermove', function (e) {
+            var pressure = e.originalEvent.pointerType === 'pen' ? e.originalEvent.pressure : 1;
             var coord = boardArea.toCanvasCoord(e.clientX, e.clientY);
             var diffCoord = {
                 x: e.clientX - beforeCoord.x,
@@ -63,7 +65,7 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
             };
             switch (boardArea.currentTool()) {
             case 'brush': case 'eraser':
-                croquis.move(coord.x, coord.y);
+                croquis.move(coord.x, coord.y, pressure);
                 break;
             case 'hand':
                 boardArea.__x__ = boardArea.x + diffCoord.x;
@@ -74,10 +76,11 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
             beforeCoord = { x: e.clientX, y: e.clientY };
         });
         $scene.on('pointerup', function (e) {
+            var pressure = e.originalEvent.pointerType === 'pen' ? e.originalEvent.pressure : 1;
             var coord = boardArea.toCanvasCoord(e.clientX, e.clientY);
             switch (boardArea.currentTool()) {
             case 'brush': case 'eraser':
-                croquis.up(coord.x, coord.y);
+                croquis.up(coord.x, coord.y, pressure);
                 break;
             case 'hand':
                 $scene.removeClass('grab');
