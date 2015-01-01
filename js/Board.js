@@ -337,6 +337,8 @@ BoardArea.prototype.selectTool = function selectTool(cls) {
     $scene.removeClass('eraser');
     $scene.removeClass('hand');
     $scene.addClass(cls);
+    $scene.find('button.tool').removeAttr('disabled');
+    $scene.find('.to-' + cls).attr('disabled', true);
 };
 BoardArea.prototype.selectBrush = function selectBrush() {
     var self = this;
