@@ -189,23 +189,6 @@ function BoardArea(element, width, height, count, myOrder, send, order2nickMap) 
         });
     });
 }
-BoardArea.prototype.toCanvasCoord = function toCanvasCoord(sceneX, sceneY) {
-    var self = this;
-    var sx = sceneX;
-    var sy = sceneY;
-    var sw = $(document.body).width();
-    var sh = $(document.body).height();
-    var hsw = sw * 0.5;
-    var hsh = sh * 0.5;
-    var bw = self.width;
-    var bh = self.height;
-    var hbw = bw * 0.5;
-    var hbh = bh * 0.5;
-    return {
-        x: sx - hsw + hbw,
-        y: sy - hsh + hbh
-    };
-};
 BoardArea.prototype.getPsdBlob = function getPsdBlob() {
     var self = this;
     var layers = self.boards.map(function (board) {
@@ -266,6 +249,65 @@ BoardArea.prototype.doCommand = function doCommand(data) {
         break;
     }
 };
+BoardArea.prototype.toCanvasCoord = function toCanvasCoord(sceneX, sceneY) {
+    var self = this;
+    var sx = sceneX;
+    var sy = sceneY;
+    var sw = $(document.body).width();
+    var sh = $(document.body).height();
+    var hsw = sw * 0.5;
+    var hsh = sh * 0.5;
+    var bw = self.width;
+    var bh = self.height;
+    var hbw = bw * 0.5;
+    var hbh = bh * 0.5;
+    return {
+        x: sx - hsw + hbw - self.x,
+        y: sy - hsh + hbh - self.y
+    };
+};
+Object.defineProperty(BoardArea.prototype, 'x', {
+    get: function () {
+        var self = this;
+        return self.__x__ || 0;
+    },
+    set: function (value) {
+        var self = this;
+        self.__x__ = value;
+        self.transform(self.x, self.y, self.scale);
+    }
+});
+Object.defineProperty(BoardArea.prototype, 'y', {
+    get: function () {
+        var self = this;
+        return self.__y__ || 0;
+    },
+    set: function (value) {
+        var self = this;
+        self.__y__ = value;
+        self.transform(self.x, self.y, self.scale);
+    }
+});
+Object.defineProperty(BoardArea.prototype, 'scale', {
+    get: function () {
+        var self = this;
+        if (self.__scale__ === undefined) return 1;
+        return self.__scale__;
+    },
+    set: function (value) {
+        var self = this;
+        self.__scale__ = value;
+        self.transform(self.x, self.y, self.scale);
+    }
+});
+BoardArea.prototype.transform = function transform(x, y, scale) {
+    var self = this;
+    var $areaElement = $(self.element);
+    $areaElement.css({
+        transform: 'translate(calc(' + x + 'px - 50%), calc(' + y + 'px - 50%))',
+        zoom: scale
+    });
+};
 BoardArea.prototype.viewFromTheSide = function viewFromTheSide() {
     var self = this;
     self.boards.forEach(function (board, order) {
@@ -278,12 +320,27 @@ BoardArea.prototype.resetView = function resetView() {
         board.resetView();
     });
 };
+BoardArea.prototype.currentTool = function currentTool() {
+    var self = this;
+    var $areaElement = $(self.element);
+    if ($areaElement.hasClass('brush')) return 'brush';
+    if ($areaElement.hasClass('eraser')) return 'eraser';
+    if ($areaElement.hasClass('hand')) return 'hand';
+    self.selectBrush();
+    return 'brush';
+};
+BoardArea.prototype.selectTool = function selectTool(cls) {
+    var self = this;
+    var $areaElement = $(self.element);
+    $areaElement.removeClass('brush');
+    $areaElement.removeClass('eraser');
+    $areaElement.removeClass('hand');
+    $areaElement.addClass(cls);
+};
 BoardArea.prototype.selectBrush = function selectBrush() {
     var self = this;
     var send = self.send;
-    var $areaElement = $(self.element);
-    $areaElement.removeClass('eraser');
-    $areaElement.addClass('brush');
+    self.selectTool('brush');
     self.board.selectBrush();
     send({
         type: 'board_command',
@@ -294,9 +351,7 @@ BoardArea.prototype.selectBrush = function selectBrush() {
 BoardArea.prototype.selectEraser = function selectEraser() {
     var self = this;
     var send = self.send;
-    var $areaElement = $(self.element);
-    $areaElement.removeClass('brush');
-    $areaElement.addClass('eraser');
+    self.selectTool('eraser');
     self.board.selectEraser();
     send({
         type: 'board_command',

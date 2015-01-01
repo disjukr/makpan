@@ -69,9 +69,9 @@
     }
     .board-area {
         position: relative;
-        margin: 0 auto;
         top: 50%;
-        transform: translateY(-50%);
+        left: 50%;
+        transform: translate(-50%, -50%);
         perspective: 1024px;
         user-select: none;
         -webkit-user-select: none;
@@ -83,6 +83,14 @@
     .board-area.eraser {
         cursor: url(./img/eraser.png) 3 3, pointer;
     }
+    .board-area.hand {
+        cursor: -webkit-grab;
+        cursor: grab;
+    }
+    .board-area.hand.grab {
+        cursor: -webkit-grabbing;
+        cursor: grabbing;
+    }
     .tool-box {
         position: fixed;
         width: 700px;
@@ -90,8 +98,8 @@
         bottom: 50px;
         left: 50%;
         transform: translateX(-50%);
-        background-color: rgba(255, 255, 255, 0.5);
-        border: 1px solid rgba(0, 0, 0, 0.2);
+        background-color: rgba(255, 255, 255, 0.7);
+        border: 1px solid rgba(0, 0, 0, 0.7);
         border-radius: 3px;
         cursor: default;
         user-select: none;
@@ -203,15 +211,14 @@
     <div id="host-drawing-scene" class="scene">
         <div class="board-area"></div>
         <div class="tool-box">
-            <div class="brush-or-eraser sequence">
-                <button class="current to-eraser">지우개</button>
-                <button class="to-brush">브러시</button>
-            </div>
+            <button class="to-brush">브러시</button>
+            <button class="to-eraser">지우개</button>
+            <button class="to-hand">이동</button>
             <input type="color">
             <div>
                 <button class="side-view">비스듬히 보기</button>
                 <div class="sequence side-view-help">
-                    <span class="current try-pointerdown">꾹 눌러보세요</span>
+                    <span class="current try-pointerdown">&lt;-꾹 눌러보세요</span>
                     <span class="try-pointerup">놓으면 돌아옵니다.</span>
                 </div>
             </div>
@@ -223,15 +230,14 @@
     <div id="guest-drawing-scene" class="scene">
         <div class="board-area"></div>
         <div class="tool-box">
-            <div class="brush-or-eraser sequence">
-                <button class="current to-eraser">지우개</button>
-                <button class="to-brush">브러시</button>
-            </div>
+            <button class="to-brush">브러시</button>
+            <button class="to-eraser">지우개</button>
+            <button class="to-hand">이동</button>
             <input type="color">
             <div>
                 <button class="side-view">비스듬히 보기</button>
                 <div class="sequence side-view-help">
-                    <span class="current try-pointerdown">꾹 눌러보세요</span>
+                    <span class="current try-pointerdown">&lt;-꾹 눌러보세요</span>
                     <span class="try-pointerup">놓으면 돌아옵니다.</span>
                 </div>
             </div>

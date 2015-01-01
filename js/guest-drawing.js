@@ -45,26 +45,57 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
     });
     $scene.on('pointerdown', function (e) {
         var coord = boardArea.toCanvasCoord(e.clientX, e.clientY);
-        croquis.down(coord.x, coord.y);
+        var beforeCoord = { x: e.clientX, y: e.clientY };
+        switch (boardArea.currentTool()) {
+        case 'brush': case 'eraser':
+            croquis.down(coord.x, coord.y);
+            break;
+        case 'hand':
+            $(boardArea.element).addClass('grab');
+            break;
+        }
         $scene.on('pointermove', function (e) {
             var coord = boardArea.toCanvasCoord(e.clientX, e.clientY);
-            croquis.move(coord.x, coord.y);
+            var diffCoord = {
+                x: e.clientX - beforeCoord.x,
+                y: e.clientY - beforeCoord.y
+            };
+            switch (boardArea.currentTool()) {
+            case 'brush': case 'eraser':
+                croquis.move(coord.x, coord.y);
+                break;
+            case 'hand':
+                boardArea.__x__ = boardArea.x + diffCoord.x;
+                boardArea.__y__ = boardArea.y + diffCoord.y;
+                boardArea.transform(boardArea.x, boardArea.y, boardArea.scale);
+                break;
+            }
+            beforeCoord = { x: e.clientX, y: e.clientY };
         });
         $scene.on('pointerup', function (e) {
             var coord = boardArea.toCanvasCoord(e.clientX, e.clientY);
-            croquis.up(coord.x, coord.y);
+            switch (boardArea.currentTool()) {
+            case 'brush': case 'eraser':
+                croquis.up(coord.x, coord.y);
+                break;
+            case 'hand':
+                $(boardArea.element).removeClass('grab');
+                break;
+            }
             $scene.off('pointermove pointerup');
         });
     });
     var $toEraserButton = $('button.to-eraser', $scene);
     var $toBrushButton = $('button.to-brush', $scene);
+    var $toHandButton = $('button.to-hand', $scene);
     $toEraserButton.on('click', function (e) {
-        $toBrushButton.setCurrent();
         boardArea.selectEraser();
     });
     $toBrushButton.on('click', function (e) {
-        $toEraserButton.setCurrent();
         boardArea.selectBrush();
+    });
+    $toHandButton.on('click', function (e) {
+        boardArea.selectTool('hand');
     });
     var $colorInput = $('input[type=color]', $scene);
     $colorInput.val(boardArea.brushColor());
