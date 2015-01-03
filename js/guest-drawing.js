@@ -68,8 +68,8 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
                 croquis.move(coord.x, coord.y, pressure);
                 break;
             case 'hand':
-                boardArea.__x__ = boardArea.x + diffCoord.x;
-                boardArea.__y__ = boardArea.y + diffCoord.y;
+                boardArea.__x__ = boardArea.x + (diffCoord.x / boardArea.scale);
+                boardArea.__y__ = boardArea.y + (diffCoord.y / boardArea.scale);
                 boardArea.transform(boardArea.x, boardArea.y, boardArea.scale);
                 break;
             }
@@ -89,31 +89,37 @@ function guest_drawing(conn, dataQueue, myId, host_info, pan_info, guestList) {
             $scene.off('pointermove pointerup');
         });
     });
-    var $toEraserButton = $('button.to-eraser', $scene);
-    var $toBrushButton = $('button.to-brush', $scene);
-    var $toHandButton = $('button.to-hand', $scene);
-    $toEraserButton.on('click', function (e) {
-        boardArea.selectEraser();
-    });
-    $toBrushButton.on('click', function (e) {
-        boardArea.selectBrush();
-    });
-    $toHandButton.on('click', function (e) {
-        boardArea.selectTool('hand');
-    });
     var $colorInput = $('input[type=color]', $scene);
+    var $toBrushButton = $('button.to-brush', $scene);
+    var $toEraserButton = $('button.to-eraser', $scene);
+    var $toHandButton = $('button.to-hand', $scene);
     $colorInput.val(boardArea.brushColor());
     $colorInput.on('change', function () {
         boardArea.brushColor($colorInput.val());
     });
+    $toBrushButton.on('click', function (e) {
+        boardArea.selectBrush();
+    });
+    $toEraserButton.on('click', function (e) {
+        boardArea.selectEraser();
+    });
+    $toHandButton.on('click', function (e) {
+        boardArea.selectTool('hand');
+    });
+    var $zoomInButton = $('button.zoom-in', $scene);
+    var $zoomOutButton = $('button.zoom-out', $scene);
     var $sideViewButton = $('button.side-view', $scene);
+    $zoomInButton.on('click', function (e) {
+        boardArea.zoomIn();
+    });
+    $zoomOutButton.on('click', function (e) {
+        boardArea.zoomOut();
+    });
     $sideViewButton.on('pointerdown', function () {
         boardArea.viewFromTheSide();
-        $('.side-view-help .try-pointerup', $scene).setCurrent();
     });
     $sideViewButton.on('pointerup', function () {
         boardArea.resetView();
-        $('.side-view-help .try-pointerdown', $scene).setCurrent();
     });
     var $save2PsdButton = $('button.save-as-psd', $scene);
     $save2PsdButton.on('click', function () {

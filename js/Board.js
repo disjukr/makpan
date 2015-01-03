@@ -258,13 +258,13 @@ BoardArea.prototype.toCanvasCoord = function toCanvasCoord(sceneX, sceneY) {
     var sh = $(document.body).height();
     var hsw = sw * 0.5;
     var hsh = sh * 0.5;
-    var bw = self.width;
-    var bh = self.height;
+    var bw = self.width * self.scale;
+    var bh = self.height * self.scale;
     var hbw = bw * 0.5;
     var hbh = bh * 0.5;
     return {
-        x: sx - hsw + hbw - self.x,
-        y: sy - hsh + hbh - self.y
+        x: (sx - hsw + hbw - (self.x * self.scale)) / self.scale,
+        y: (sy - hsh + hbh - (self.y * self.scale)) / self.scale
     };
 };
 Object.defineProperty(BoardArea.prototype, 'x', {
@@ -301,6 +301,14 @@ Object.defineProperty(BoardArea.prototype, 'scale', {
         self.transform(self.x, self.y, self.scale);
     }
 });
+BoardArea.prototype.zoomIn = function zoomIn() {
+    var self = this;
+    self.scale *= 2;
+};
+BoardArea.prototype.zoomOut = function zoomIn() {
+    var self = this;
+    self.scale *= 0.5;
+};
 BoardArea.prototype.transform = function transform(x, y, scale) {
     var self = this;
     var $areaElement = $(self.element);
