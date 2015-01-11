@@ -142,6 +142,10 @@ function host_drawing(host_info, pan_info, guest_info) {
     $sideViewButton.on('pointerup', function () {
         boardArea.resetView();
     });
+    var $clearLayerButton = $('button.clear-layer', $scene);
+    $clearLayerButton.on('click', function (e) {
+        boardArea.clearLayer();
+    });
     var $save2PsdButton = $('button.save-as-psd', $scene);
     $save2PsdButton.on('click', function () {
         var blobToSave = boardArea.getPsdBlob();

@@ -95,6 +95,11 @@ Board.prototype.resetView = function resetView() {
         opacity: 0
     });
 };
+Board.prototype.clearLayer = function clearLayer() {
+    var self = this;
+    var croquis = self.croquis;
+    croquis.clearLayer();
+};
 Board.prototype.selectBrush = function selectBrush() {
     var self = this;
     var croquis = self.croquis;
@@ -239,6 +244,9 @@ BoardArea.prototype.doCommand = function doCommand(data) {
     case 'redo':
         croquis.redo();
         break;
+    case 'clear-layer':
+        board.clearLayer();
+        break;
     case 'select-eraser':
         board.selectEraser();
         break;
@@ -328,6 +336,17 @@ BoardArea.prototype.resetView = function resetView() {
     self.boards.forEach(function (board) {
         board.resetView();
     });
+};
+BoardArea.prototype.clearLayer = function clearLayer() {
+    var self = this;
+    var send = self.send;
+    var result = self.board.clearLayer();
+    send({
+        type: 'board_command',
+        command: 'clear-layer',
+        order: self.order
+    });
+    return result;
 };
 BoardArea.prototype.currentTool = function currentTool() {
     var self = this;
