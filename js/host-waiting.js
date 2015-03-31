@@ -3,6 +3,13 @@ function host_waiting(peer) {
     $scene.setCurrent();
     var $startButton = $('button.start', $scene);
     $('.room-address span', $scene).text(peer.id);
+	(function(){
+		var url = window.location.origin + window.location.pathname + '?host=' + peer.id;
+		var a = $('<a>');
+		a.attr('href', url);
+		a.html(url);
+		$('.room-url', $scene).append(a);
+	})();
     var hostDefaultNick = caragen();
     $('input.nick', $scene).val(hostDefaultNick);
     var guestCount = 0;
