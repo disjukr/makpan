@@ -8,7 +8,7 @@
     "lib/*"
   ],
   "scripts": {
-    "install": "git submodule update --init --recursive",
+    "preinstall": "git submodule update --init --recursive",
     "dev": "yarn workspace client dev"
   },
   "repository": {
