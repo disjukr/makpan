@@ -1,0 +1,24 @@
+{
+  "name": "makpan",
+  "version": "0.0.0",
+  "private": true,
+  "description": "drawing tool",
+  "workspaces": [
+    "client",
+    "lib/*"
+  ],
+  "scripts": {
+    "install": "git submodule update --init --recursive",
+    "dev": "yarn workspace client dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/disjukr/makpan.git"
+  },
+  "author": "JongChan Choi <jong@chan.moe>",
+  "license": "Zlib",
+  "bugs": {
+    "url": "https://github.com/disjukr/makpan/issues"
+  },
+  "homepage": "https://github.com/disjukr/makpan#readme"
+}
